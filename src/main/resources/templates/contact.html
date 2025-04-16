@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Liên hệ - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section contact-page">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a th:href="@{/}">Trang chủ</a>
+                </div>
+                <div class="breadcrumb-item active">
+                    Liên hệ
+                </div>
+            </div>
+
+            <h1 class="page-title">Liên hệ với chúng tôi</h1>
+
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h2>Thông tin liên hệ</h2>
+                    <p>Nếu bạn có bất kỳ câu hỏi nào hoặc cần hỗ trợ, đừng ngần ngại liên hệ với chúng tôi. Đội ngũ của chúng tôi luôn sẵn sàng giúp đỡ bạn.</p>
+
+                    <div class="contact-details">
+                        <div class="contact-detail">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong>Địa chỉ:</strong>
+                                <p>123 Đường Láng, Đống Đa, Hà Nội</p>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <strong>Điện thoại:</strong>
+                                <p>+84 123 456 789</p>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <strong>Email:</strong>
+                                <p>info@petshop.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <strong>Giờ làm việc:</strong>
+                                <p>Thứ 2 - Chủ nhật: 08:00 - 20:00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <h3>Kết nối với chúng tôi</h3>
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h2>Gửi tin nhắn cho chúng tôi</h2>
+
+                    <form th:action="@{/contact}" method="post">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Họ và tên</label>
+                                <input type="text" id="name" name="name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Tiêu đề</label>
+                            <input type="text" id="subject" name="subject" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="form-label">Nội dung</label>
+                            <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
+                        </div>
+
+                        <div class="form-action">
+                            <button type="submit" class="btn btn-primary">Gửi tin nhắn</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="contact-map">
+                <h2>Bản đồ</h2>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0698949809503!2d105.8135175!3d21.0276587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab424a50fff9%3A0xcf10b34e9f1a03df!2zxJAuIEzDoW5nLCBMw6FuZyBUaMaw4bujbmcsIMSQ4buRbmcgxJBhLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1682321232270!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <div class="contact-branches">
+                <h2>Các chi nhánh của chúng tôi</h2>
+
+                <div class="branches-grid">
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <h3>Chi nhánh Hà Nội</h3>
+                        </div>
+                        <div class="branch-content">
+                            <div class="branch-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>123 Đường Láng, Đống Đa, Hà Nội</span>
+                            </div>
+                            <div class="branch-detail">
+                                <i class="fas fa-phone"></i>
+                                <span>+84 123 456 789</span>
+                            </div>
+                            <div class="branch-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span>hanoi@petshop.com</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <h3>Chi nhánh TP.HCM</h3>
+                        </div>
+                        <div class="branch-content">
+                            <div class="branch-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>456 Lê Lợi, Quận 1, TP.HCM</span>
+                            </div>
+                            <div class="branch-detail">
+                                <i class="fas fa-phone"></i>
+                                <span>+84 987 654 321</span>
+                            </div>
+                            <div class="branch-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span>hcm@petshop.com</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <h3>Chi nhánh Đà Nẵng</h3>
+                        </div>
+                        <div class="branch-content">
+                            <div class="branch-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>789 Trần Phú, Hải Châu, Đà Nẵng</span>
+                            </div>
+                            <div class="branch-detail">
+                                <i class="fas fa-phone"></i>
+                                <span>+84 456 789 123</span>
+                            </div>
+                            <div class="branch-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span>danang@petshop.com</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-section">
+                <h2>Câu hỏi thường gặp</h2>
+
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Làm thế nào để mua thú cưng tại Pet Shop?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Để mua thú cưng tại Pet Shop, bạn có thể trực tiếp đến cửa hàng hoặc đặt hàng trên website của chúng tôi. Đối với mỗi thú cưng, chúng tôi sẽ tư vấn chi tiết về đặc điểm, tính cách và cách chăm sóc để bạn có thể lựa chọn được người bạn phù hợp nhất.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Các thú cưng có được tiêm phòng và kiểm tra sức khỏe không?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Tất cả thú cưng tại Pet Shop đều được tiêm phòng đầy đủ và kiểm tra sức khỏe bởi bác sĩ thú y trước khi đến tay khách hàng. Chúng tôi cung cấp đầy đủ hồ sơ sức khỏe và lịch tiêm phòng của từng thú cưng.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Chính sách bảo hành và đổi trả sản phẩm như thế nào?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Pet Shop áp dụng chính sách bảo hành và đổi trả trong vòng 7 ngày đối với sản phẩm lỗi do nhà sản xuất. Đối với thú cưng, chúng tôi có chính sách bảo hành sức khỏe trong 15 ngày kể từ ngày mua.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Pet Shop có dịch vụ giao hàng không?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Có, chúng tôi cung cấp dịch vụ giao hàng miễn phí trong nội thành đối với đơn hàng từ 500.000đ. Đối với thú cưng, chúng tôi có dịch vụ giao hàng đặc biệt đảm bảo an toàn và thoải mái cho thú cưng trong quá trình vận chuyển.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Làm thế nào để đăng ký dịch vụ chăm sóc thú cưng?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Để đăng ký dịch vụ chăm sóc thú cưng, bạn có thể liên hệ trực tiếp với chúng tôi qua số điện thoại hoặc email, hoặc đặt lịch trực tiếp trên website. Chúng tôi cung cấp đa dạng dịch vụ như tắm, cắt tỉa lông, spa, khám bệnh và nhiều dịch vụ khác.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    function toggleFAQ(element) {
+        // Toggle active class on the clicked question
+        element.classList.toggle('active');
+
+        // Toggle visibility of the answer
+        const answer = element.nextElementSibling;
+        if (answer.style.maxHeight) {
+            answer.style.maxHeight = null;
+        } else {
+            answer.style.maxHeight = answer.scrollHeight + "px";
+        }
+    }
+</script>
+</body>
+</html>

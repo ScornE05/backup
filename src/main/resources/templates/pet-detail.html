@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title th:text="${pet.name} + ' - Pet Shop'">Tên thú cưng - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a th:href="@{/}">Trang chủ</a>
+                </div>
+                <div class="breadcrumb-item">
+                    <a th:href="@{/pets}">Thú cưng</a>
+                </div>
+                <div class="breadcrumb-item">
+                    <a th:href="@{/pets(species=${pet.species})}" th:text="${pet.species}">Loài</a>
+                </div>
+                <div class="breadcrumb-item active" th:text="${pet.name}">
+                    Tên thú cưng
+                </div>
+            </div>
+
+            <!-- Pet Details -->
+            <div class="pet-details">
+                <div class="product-details-grid">
+                    <div class="product-gallery">
+                        <div class="product-main-image">
+                            <img id="main-product-image" th:src="${pet.imageUrl}" alt="Pet">
+                        </div>
+                        <div class="product-thumbnails" th:if="${!pet.images.empty}">
+                            <div class="product-thumbnail active" th:each="image, status : ${pet.images}"
+                                 th:onclick="'changeMainImage(\'' + ${image.imageUrl} + '\')'">
+                                <img th:src="${image.imageUrl}" alt="Thumbnail">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-details-info">
+                        <h1 th:text="${pet.name}">Tên thú cưng</h1>
+
+                        <div class="pet-status-badge" th:classappend="${pet.status == 'AVAILABLE' ? 'available' : (pet.status == 'SOLD' ? 'sold' : 'reserved')}">
+                            <span th:text="${pet.status == 'AVAILABLE' ? 'Đang tìm chủ' : (pet.status == 'SOLD' ? 'Đã tìm được nhà' : 'Đã đặt trước')}"></span>
+                        </div>
+
+                        <div class="pet-details-meta">
+                            <div class="pet-meta-item">
+                                <div class="pet-meta-label">Loài:</div>
+                                <div class="pet-meta-value" th:text="${pet.species}">Loài</div>
+                            </div>
+                            <div class="pet-meta-item">
+                                <div class="pet-meta-label">Giống:</div>
+                                <div class="pet-meta-value" th:text="${pet.breed}">Giống</div>
+                            </div>
+                            <div class="pet-meta-item">
+                                <div class="pet-meta-label">Giới tính:</div>
+                                <div class="pet-meta-value" th:text="${pet.gender == 'MALE' ? 'Đực' : 'Cái'}">Giới tính</div>
+                            </div>
+                            <div class="pet-meta-item">
+                                <div class="pet-meta-label">Tuổi:</div>
+                                <div class="pet-meta-value" th:text="${pet.age} + ' tháng'">Tuổi</div>
+                            </div>
+                            <div class="pet-meta-item" th:if="${pet.color != null}">
+                                <div class="pet-meta-label">Màu sắc:</div>
+                                <div class="pet-meta-value" th:text="${pet.color}">Màu sắc</div>
+                            </div>
+                            <div class="pet-meta-item" th:if="${pet.weight != null}">
+                                <div class="pet-meta-label">Cân nặng:</div>
+                                <div class="pet-meta-value" th:text="${pet.weight} + ' kg'">Cân nặng</div>
+                            </div>
+                        </div>
+
+                        <div class="pet-details-price">
+                            <span class="current-price" th:text="${#numbers.formatDecimal(pet.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá bán</span>
+                        </div>
+
+                        <div class="pet-details-description" th:utext="${pet.description}">
+                            Mô tả thú cưng
+                        </div>
+
+                        <div class="pet-actions" th:if="${pet.status == 'AVAILABLE'}">
+                            <a href="#contact-form" class="btn btn-primary">
+                                <i class="fas fa-paw"></i> Liên hệ nhận nuôi
+                            </a>
+                            <button type="button" class="btn btn-outline" onclick="addToWishlist()">
+                                <i class="far fa-heart"></i> Yêu thích
+                            </button>
+                        </div>
+
+                        <div class="sold-message" th:if="${pet.status == 'SOLD'}">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Thú cưng này đã tìm được nhà mới.
+                            </div>
+                        </div>
+
+                        <div class="reserved-message" th:if="${pet.status == 'RESERVED'}">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-circle"></i> Thú cưng này đã được đặt trước.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pet Information Tabs -->
+            <div class="pet-tabs">
+                <div class="tabs-nav">
+                    <div class="tab-item active" onclick="openTab('description')">Mô tả</div>
+                    <div class="tab-item" onclick="openTab('characteristics')">Đặc điểm</div>
+                    <div class="tab-item" onclick="openTab('care-guide')">Hướng dẫn chăm sóc</div>
+                </div>
+
+                <div id="description" class="tab-content active">
+                    <div class="pet-description" th:utext="${pet.description}">
+                        Mô tả chi tiết thú cưng
+                    </div>
+                </div>
+
+                <div id="characteristics" class="tab-content">
+                    <div class="characteristics-content">
+                        <h3>Đặc điểm của giống <span th:text="${pet.breed}">Giống</span></h3>
+                        <div class="characteristics-grid">
+                            <div class="characteristic-item">
+                                <div class="characteristic-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="characteristic-info">
+                                    <h4>Tính cách</h4>
+                                    <p>Thân thiện, năng động, thông minh</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <div class="characteristic-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div class="characteristic-info">
+                                    <h4>Môi trường sống</h4>
+                                    <p>Thích hợp với nhà có sân vườn hoặc căn hộ rộng rãi</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <div class="characteristic-icon">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <div class="characteristic-info">
+                                    <h4>Chế độ ăn</h4>
+                                    <p>Thức ăn hạt cao cấp, thịt tươi và rau củ</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <div class="characteristic-icon">
+                                    <i class="fas fa-walking"></i>
+                                </div>
+                                <div class="characteristic-info">
+                                    <h4>Vận động</h4>
+                                    <p>Cần đi dạo và chơi đùa hàng ngày</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <div class="characteristic-icon">
+                                    <i class="fas fa-cut"></i>
+                                </div>
+                                <div class="characteristic-info">
+                                    <h4>Cắt tỉa lông</h4>
+                                    <p>Cần chải lông hàng ngày và cắt tỉa định kỳ</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <div class="characteristic-icon">
+                                    <i class="fas fa-heartbeat"></i>
+                                </div>
+                                <div class="characteristic-info">
+                                    <h4>Sức khỏe</h4>
+                                    <p>Khỏe mạnh, đã được tiêm phòng đầy đủ</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="care-guide" class="tab-content">
+                    <div class="care-guide-content">
+                        <h3>Hướng dẫn chăm sóc</h3>
+                        <div class="care-steps">
+                            <div class="care-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Chế độ ăn</h4>
+                                    <p>Cho ăn theo lịch cố định, 2-3 lần/ngày. Sử dụng thức ăn chất lượng cao phù hợp với độ tuổi và kích thước. Luôn đảm bảo có nước sạch.</p>
+                                </div>
+                            </div>
+                            <div class="care-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Vận động</h4>
+                                    <p>Dành thời gian đi dạo hoặc chơi đùa với thú cưng ít nhất 30 phút mỗi ngày. Đây là cách tốt để duy trì sức khỏe và tạo mối quan hệ gắn bó.</p>
+                                </div>
+                            </div>
+                            <div class="care-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Vệ sinh</h4>
+                                    <p>Tắm cho thú cưng 1-2 lần/tháng hoặc khi cần thiết. Chải lông hàng ngày để loại bỏ lông rụng và ngăn ngừa các nút rối.</p>
+                                </div>
+                            </div>
+                            <div class="care-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Tiêm phòng và khám sức khỏe</h4>
+                                    <p>Đưa thú cưng đi khám thú y định kỳ 6 tháng/lần. Đảm bảo tiêm phòng đầy đủ và tẩy giun theo lịch.</p>
+                                </div>
+                            </div>
+                            <div class="care-step">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <h4>Huấn luyện</h4>
+                                    <p>Dành thời gian để huấn luyện thú cưng các lệnh cơ bản. Sử dụng phương pháp tích cực, khen thưởng khi thú cưng làm đúng.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form Section -->
+            <div id="contact-form" class="pet-contact-section" th:if="${pet.status == 'AVAILABLE'}">
+                <h2>Liên hệ nhận nuôi</h2>
+                <div class="contact-form">
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Họ và tên</label>
+                                <input type="text" id="name" name="name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Số điện thoại</label>
+                                <input type="tel" id="phone" name="phone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="address" class="form-label">Địa chỉ</label>
+                                <input type="text" id="address" name="address" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="form-label">Tin nhắn</label>
+                            <textarea id="message" name="message" class="form-control" rows="4" required
+                                      placeholder="Hãy chia sẻ về môi trường sống và kinh nghiệm chăm sóc thú cưng của bạn..."></textarea>
+                        </div>
+
+                        <div class="form-action">
+                            <button type="submit" class="btn btn-primary">Gửi liên hệ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Similar Pets -->
+            <section class="similar-pets" th:if="${!similarPets.empty}">
+                <h2>Thú cưng tương tự</h2>
+
+                <div class="pet-grid">
+                    <div class="pet-card" th:each="similarPet : ${similarPets}" th:if="${similarPet.id != pet.id}">
+                        <div class="pet-image">
+                            <img th:src="${similarPet.imageUrl}" alt="Pet">
+                            <span class="pet-badge" th:text="${similarPet.status}">Available</span>
+                        </div>
+                        <div class="pet-info">
+                            <h3 class="pet-name">
+                                <a th:href="@{/pets/{id}(id=${similarPet.id})}" th:text="${similarPet.name}">Tên thú cưng</a>
+                            </h3>
+                            <div class="pet-breed" th:text="${similarPet.species} + ' - ' + ${similarPet.breed}">Loài - Giống</div>
+                            <div class="pet-details">
+                                <span class="pet-detail"><i class="fas fa-venus-mars"></i> <span th:text="${similarPet.gender}">Giới tính</span></span>
+                                <span class="pet-detail"><i class="fas fa-birthday-cake"></i> <span th:text="${similarPet.age} + ' tháng'">Tuổi</span></span>
+                            </div>
+                            <div class="pet-price" th:text="${#numbers.formatDecimal(similarPet.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá</div>
+                            <div class="product-actions">
+                                <a th:href="@{/pets/{id}(id=${similarPet.id})}" class="btn btn-outline btn-sm">Chi tiết</a>
+                                <a th:href="@{/contact}" class="btn btn-primary btn-sm">Liên hệ</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</main>
+
+<script>
+    function openTab(tabId) {
+        // Hide all tab contents
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(tab => tab.classList.remove('active'));
+
+        // Show selected tab content
+        document.getElementById(tabId).classList.add('active');
+
+        // Update tab item active state
+        const tabItems = document.querySelectorAll('.tab-item');
+        tabItems.forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    function addToWishlist() {
+        const petId = [[${pet.id}]];
+
+        // AJAX request to add to wishlist
+        fetch('/api/wishlists', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                petId: petId
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert('Thú cưng đã được thêm vào danh sách yêu thích!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi thêm thú cưng vào danh sách yêu thích.');
+            });
+    }
+</script>
+</body>
+</html>

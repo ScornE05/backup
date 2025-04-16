@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Thanh toán - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section checkout-page">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a th:href="@{/}">Trang chủ</a>
+                </div>
+                <div class="breadcrumb-item">
+                    <a th:href="@{/cart}">Giỏ hàng</a>
+                </div>
+                <div class="breadcrumb-item active">
+                    Thanh toán
+                </div>
+            </div>
+
+            <h1 class="page-title">Thanh toán</h1>
+
+            <div class="checkout-grid">
+                <div class="checkout-form">
+                    <h2>Thông tin thanh toán</h2>
+
+                    <form th:action="@{/checkout}" method="post" th:object="${orderDTO}">
+                        <div class="form-group">
+                            <label for="fullName" class="form-label">Họ và tên</label>
+                            <input type="text" id="fullName" name="fullName" class="form-control" th:value="${user.fullName}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Số điện thoại</label>
+                            <input type="text" id="phone" name="phone" class="form-control" th:value="${user.phone}" th:field="*{phone}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="shippingAddress" class="form-label">Địa chỉ giao hàng</label>
+                            <textarea id="shippingAddress" name="shippingAddress" class="form-control" th:field="*{shippingAddress}" rows="3" th:text="${user.address}" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="note" class="form-label">Ghi chú đơn hàng (tùy chọn)</label>
+                            <textarea id="note" name="note" class="form-control" th:field="*{note}" rows="3"></textarea>
+                        </div>
+
+                        <h3>Phương thức thanh toán</h3>
+
+                        <div class="payment-methods">
+                            <div class="payment-method">
+                                <input type="radio" id="payment-cash" name="paymentMethod" value="CASH" th:field="*{paymentMethod}" checked>
+                                <div class="payment-method-info">
+                                    <h3>Thanh toán khi nhận hàng (COD)</h3>
+                                    <p>Thanh toán bằng tiền mặt khi nhận hàng.</p>
+                                </div>
+                            </div>
+
+                            <div class="payment-method">
+                                <input type="radio" id="payment-bank" name="paymentMethod" value="BANK_TRANSFER" th:field="*{paymentMethod}">
+                                <div class="payment-method-info">
+                                    <h3>Chuyển khoản ngân hàng</h3>
+                                    <p>Thanh toán qua chuyển khoản ngân hàng. Chúng tôi sẽ gửi thông tin tài khoản qua email.</p>
+                                </div>
+                            </div>
+
+                            <div class="payment-method">
+                                <input type="radio" id="payment-card" name="paymentMethod" value="CREDIT_CARD" th:field="*{paymentMethod}">
+                                <div class="payment-method-info">
+                                    <h3>Thẻ tín dụng/Ghi nợ</h3>
+                                    <p>Thanh toán an toàn qua cổng thanh toán.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
+                            <label for="terms" class="form-check-label">Tôi đã đọc và đồng ý với <a href="#">điều khoản và điều kiện</a> của cửa hàng</label>
+                        </div>
+
+                        <input type="hidden" name="totalAmount" th:value="${cart.totalAmount}" th:field="*{totalAmount}">
+
+                        <div class="form-action">
+                            <button type="submit" class="btn btn-primary btn-block">Đặt hàng</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="checkout-order-summary">
+                    <h2>Đơn hàng của bạn</h2>
+
+                    <div class="checkout-products">
+                        <div class="checkout-product" th:each="item : ${cart.items}">
+                            <div class="checkout-product-image">
+                                <img th:if="${item.productId != null}" th:src="${item.productImageUrl}" alt="Product">
+                                <img th:if="${item.petId != null}" th:src="${item.petImageUrl}" alt="Pet">
+                            </div>
+                            <div class="checkout-product-info">
+                                <h3 th:if="${item.productId != null}" th:text="${item.productName}">Tên sản phẩm</h3>
+                                <h3 th:if="${item.petId != null}" th:text="${item.petName}">Tên thú cưng</h3>
+                                <div class="checkout-product-price">
+                                    <span th:text="${item.quantity} + ' x '"></span>
+                                    <span th:if="${item.productId != null && item.productDiscountPrice != null}" th:text="${#numbers.formatDecimal(item.productDiscountPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá khuyến mãi</span>
+                                    <span th:if="${item.productId != null && item.productDiscountPrice == null}" th:text="${#numbers.formatDecimal(item.productPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá sản phẩm</span>
+                                    <span th:if="${item.petId != null}" th:text="${#numbers.formatDecimal(item.petPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá thú cưng</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Tạm tính</div>
+                        <div class="summary-value" th:text="${#numbers.formatDecimal(cart.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Phí vận chuyển</div>
+                        <div class="summary-value">Miễn phí</div>
+                    </div>
+
+                    <div class="summary-total">
+                        <div class="summary-label">Tổng cộng</div>
+                        <div class="summary-value" th:text="${#numbers.formatDecimal(cart.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

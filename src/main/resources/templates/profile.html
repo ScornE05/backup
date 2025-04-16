@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Tài khoản của tôi - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section profile-page">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a th:href="@{/}">Trang chủ</a>
+                </div>
+                <div class="breadcrumb-item active">
+                    Tài khoản
+                </div>
+            </div>
+
+            <h1 class="page-title">Tài khoản của tôi</h1>
+
+            <div class="profile-grid">
+                <div class="profile-sidebar">
+                    <div class="profile-avatar">
+                        <div class="avatar-circle">
+                            <span th:text="${#strings.substring(user.fullName, 0, 1).toUpperCase()}">A</span>
+                        </div>
+                        <div class="profile-name" th:text="${user.fullName}">Họ và tên</div>
+                        <div class="profile-email" th:text="${user.email}">Email</div>
+                    </div>
+
+                    <ul class="profile-menu">
+                        <li>
+                            <a href="#" class="active" data-target="account-info">
+                                <i class="fas fa-user"></i> Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-target="orders">
+                                <i class="fas fa-shopping-bag"></i> Đơn hàng của tôi
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-target="addresses">
+                                <i class="fas fa-map-marker-alt"></i> Địa chỉ giao hàng
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-target="wishlist">
+                                <i class="fas fa-heart"></i> Danh sách yêu thích
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-target="change-password">
+                                <i class="fas fa-lock"></i> Đổi mật khẩu
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/logout}">
+                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="profile-content">
+                    <!-- Account Info Section -->
+                    <div id="account-info" class="profile-section active">
+                        <h2>Thông tin tài khoản</h2>
+
+                        <form class="account-form" th:action="@{/profile/update}" method="post" th:object="${user}">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="username" class="form-label">Tên đăng nhập</label>
+                                    <input type="text" id="username" name="username" class="form-control" th:value="${user.username}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" id="email" name="email" class="form-control" th:value="${user.email}" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullName" class="form-label">Họ và tên</label>
+                                    <input type="text" id="fullName" name="fullName" class="form-control" th:value="${user.fullName}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone" class="form-label">Số điện thoại</label>
+                                    <input type="tel" id="phone" name="phone" class="form-control" th:value="${user.phone}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address" class="form-label">Địa chỉ</label>
+                                <textarea id="address" name="address" class="form-control" rows="3" th:text="${user.address}"></textarea>
+                            </div>
+
+                            <div class="form-action">
+                                <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Orders Section -->
+                    <div id="orders" class="profile-section">
+                        <h2>Đơn hàng gần đây</h2>
+
+                        <div class="recent-orders" th:if="${!recentOrders.empty}">
+                            <div class="order-card" th:each="order : ${recentOrders}">
+                                <div class="order-header">
+                                    <div class="order-id">
+                                        Mã đơn hàng: <span th:text="${'#' + order.id}"></span>
+                                    </div>
+                                    <div class="order-date">
+                                        Ngày đặt: <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+                                    </div>
+                                    <div class="order-status">
+                                            <span th:class="${order.status}"
+                                                  th:text="${order.status == 'PENDING' ? 'Chờ xác nhận' :
+                                                          (order.status == 'PROCESSING' ? 'Đang xử lý' :
+                                                          (order.status == 'SHIPPED' ? 'Đang giao hàng' :
+                                                          (order.status == 'DELIVERED' ? 'Đã giao hàng' : 'Đã hủy')))}">
+                                                Trạng thái
+                                            </span>
+                                    </div>
+                                </div>
+
+                                <div class="order-total">
+                                    <div class="total-label">Tổng cộng:</div>
+                                    <div class="total-value" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                                </div>
+
+                                <div class="order-actions">
+                                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-outline btn-sm">
+                                        Xem chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="no-orders" th:if="${recentOrders.empty}">
+                            <p>Bạn chưa có đơn hàng nào.</p>
+                        </div>
+
+                        <div class="view-all">
+                            <a th:href="@{/orders}" class="btn btn-outline">Xem tất cả đơn hàng</a>
+                        </div>
+                    </div>
+
+                    <!-- Addresses Section -->
+                    <div id="addresses" class="profile-section">
+                        <h2>Địa chỉ giao hàng</h2>
+
+                        <div class="addresses-list" th:if="${!addresses.empty}">
+                            <div class="address-card" th:each="address : ${addresses}">
+                                <div class="address-header">
+                                    <div class="address-name" th:text="${address.name}">Tên địa chỉ</div>
+                                    <div class="address-default" th:if="${address.isDefault}">Mặc định</div>
+                                </div>
+
+                                <div class="address-content">
+                                    <div class="address-detail" th:text="${address.fullName}">Họ và tên</div>
+                                    <div class="address-detail" th:text="${address.phone}">Số điện thoại</div>
+                                    <div class="address-detail" th:text="${address.address}">Địa chỉ chi tiết</div>
+                                </div>
+
+                                <div class="address-actions">
+                                    <button type="button" class="btn btn-outline btn-sm" th:onclick="'editAddress(' + ${address.id} + ')'">
+                                        Sửa
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm" th:onclick="'deleteAddress(' + ${address.id} + ')'">
+                                        Xóa
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" th:if="${!address.isDefault}" th:onclick="'setDefaultAddress(' + ${address.id} + ')'">
+                                        Đặt làm mặc định
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="no-addresses" th:if="${addresses.empty}">
+                            <p>Bạn chưa có địa chỉ giao hàng nào.</p>
+                        </div>
+
+                        <div class="add-address">
+                            <button type="button" class="btn btn-primary" onclick="showAddAddressForm()">
+                                <i class="fas fa-plus"></i> Thêm địa chỉ mới
+                            </button>
+                        </div>
+
+                        <!-- Add/Edit Address Form -->
+                        <div id="address-form-container" class="address-form-container" style="display: none;">
+                            <form id="address-form" class="address-form">
+                                <h3 id="address-form-title">Thêm địa chỉ mới</h3>
+
+                                <input type="hidden" id="addressId" name="id">
+
+                                <div class="form-group">
+                                    <label for="addressName" class="form-label">Tên địa chỉ</label>
+                                    <input type="text" id="addressName" name="name" class="form-control" placeholder="Ví dụ: Nhà riêng, Văn phòng..." required>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="addressFullName" class="form-label">Họ và tên</label>
+                                        <input type="text" id="addressFullName" name="fullName" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addressPhone" class="form-label">Số điện thoại</label>
+                                        <input type="tel" id="addressPhone" name="phone" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="addressDetail" class="form-label">Địa chỉ chi tiết</label>
+                                    <textarea id="addressDetail" name="address" class="form-control" rows="3" required></textarea>
+                                </div>
+
+                                <div class="form-check">
+                                    <input type="checkbox" id="isDefault" name="isDefault" class="form-check-input">
+                                    <label for="isDefault" class="form-check-label">Đặt làm địa chỉ mặc định</label>
+                                </div>
+
+                                <div class="form-action">
+                                    <button type="submit" class="btn btn-primary">Lưu địa chỉ</button>
+                                    <button type="button" class="btn btn-outline" onclick="hideAddressForm()">Hủy</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Wishlist Section -->
+                    <div id="wishlist" class="profile-section">
+                        <h2>Danh sách yêu thích</h2>
+
+                        <div class="wishlist-grid" th:if="${!wishlist.empty}">
+                            <!-- Products -->
+                            <div class="product-card" th:each="item : ${wishlist}" th:if="${item.productId != null}">
+                                <div class="product-image">
+                                    <img th:src="${item.productImageUrl}" alt="Product">
+                                    <button type="button" class="wishlist-remove" th:onclick="'removeFromWishlist(' + ${item.id} + ')'">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-category" th:text="${item.productCategoryName}">Danh mục</div>
+                                    <h3 class="product-title">
+                                        <a th:href="@{/products/{id}(id=${item.productId})}" th:text="${item.productName}">Tên sản phẩm</a>
+                                    </h3>
+                                    <div class="product-price">
+                                        <span class="current-price" th:if="${item.productDiscountPrice != null}" th:text="${#numbers.formatDecimal(item.productDiscountPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá khuyến mãi</span>
+                                        <span class="current-price" th:if="${item.productDiscountPrice == null}" th:text="${#numbers.formatDecimal(item.productPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá bán</span>
+                                        <span class="original-price" th:if="${item.productDiscountPrice != null}" th:text="${#numbers.formatDecimal(item.productPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá gốc</span>
+                                    </div>
+                                    <div class="product-actions">
+                                        <a th:href="@{/products/{id}(id=${item.productId})}" class="btn btn-outline btn-sm">Chi tiết</a>
+                                        <button type="button" class="btn btn-primary btn-sm" th:onclick="'addToCart(' + ${item.productId} + ')'">Thêm vào giỏ</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pets -->
+                            <div class="pet-card" th:each="item : ${wishlist}" th:if="${item.petId != null}">
+                                <div class="pet-image">
+                                    <img th:src="${item.petImageUrl}" alt="Pet">
+                                    <span class="pet-badge" th:text="${item.petStatus}">Available</span>
+                                    <button type="button" class="wishlist-remove" th:onclick="'removeFromWishlist(' + ${item.id} + ')'">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="pet-info">
+                                    <h3 class="pet-name">
+                                        <a th:href="@{/pets/{id}(id=${item.petId})}" th:text="${item.petName}">Tên thú cưng</a>
+                                    </h3>
+                                    <div class="pet-breed" th:text="${item.petSpecies} + ' - ' + ${item.petBreed}">Loài - Giống</div>
+                                    <div class="pet-price" th:text="${#numbers.formatDecimal(item.petPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá</div>
+                                    <div class="product-actions">
+                                        <a th:href="@{/pets/{id}(id=${item.petId})}" class="btn btn-primary btn-sm">Chi tiết</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="no-wishlist" th:if="${wishlist.empty}">
+                            <p>Bạn chưa có sản phẩm nào trong danh sách yêu thích.</p>
+                            <a th:href="@{/products}" class="btn btn-primary">Tiếp tục mua sắm</a>
+                        </div>
+                    </div>
+
+                    <!-- Change Password Section -->
+                    <div id="change-password" class="profile-section">
+                        <h2>Đổi mật khẩu</h2>
+
+                        <form class="password-form" th:action="@{/profile/password}" method="post">
+                            <div class="form-group">
+                                <label for="currentPassword" class="form-label">Mật khẩu hiện tại</label>
+                                <input type="password" id="currentPassword" name="currentPassword" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                                <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                            </div>
+
+                            <div class="form-action">
+                                <button type="submit" class="btn btn-primary">Cập nhật mật khẩu</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    // Tab switching
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabLinks = document.querySelectorAll('.profile-menu a');
+        const tabContents = document.querySelectorAll('.profile-section');
+
+        tabLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Remove active class from all links and contents
+                tabLinks.forEach(item => item.classList.remove('active'));
+                tabContents.forEach(item => item.classList.remove('active'));
+
+                // Add active class to clicked link
+                this.classList.add('active');
+
+                // Show corresponding content
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+    });
+
+    // Address form functions
+    function showAddAddressForm() {
+        document.getElementById('address-form-title').textContent = 'Thêm địa chỉ mới';
+        document.getElementById('addressId').value = '';
+        document.getElementById('addressName').value = '';
+        document.getElementById('addressFullName').value = '';
+        document.getElementById('addressPhone').value = '';
+        document.getElementById('addressDetail').value = '';
+        document.getElementById('isDefault').checked = false;
+
+        document.getElementById('address-form-container').style.display = 'block';
+    }
+
+    function hideAddressForm() {
+        document.getElementById('address-form-container').style.display = 'none';
+    }
+
+    function editAddress(addressId) {
+        // In a real application, you would fetch address data from server
+        // For this example, we'll just show the form
+        document.getElementById('address-form-title').textContent = 'Chỉnh sửa địa chỉ';
+        document.getElementById('addressId').value = addressId;
+
+        // For demo, we would normally populate form fields with address data
+        // fetchAddressData(addressId);
+
+        document.getElementById('address-form-container').style.display = 'block';
+    }
+
+    function deleteAddress(addressId) {
+        if (confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) {
+            // AJAX request to delete address
+            fetch('/api/addresses/' + addressId, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Địa chỉ đã được xóa thành công!');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi xóa địa chỉ.');
+                });
+        }
+    }
+
+    function setDefaultAddress(addressId) {
+        // AJAX request to set default address
+        fetch('/api/addresses/' + addressId + '/default', {
+            method: 'PUT'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Địa chỉ đã được đặt làm mặc định!');
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi đặt địa chỉ mặc định.');
+            });
+    }
+
+    // Handle address form submission
+    document.addEventListener('DOMContentLoaded', function() {
+        const addressForm = document.getElementById('address-form');
+        if (addressForm) {
+            addressForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(addressForm);
+                const addressData = {};
+
+                formData.forEach((value, key) => {
+                    if (key === 'isDefault') {
+                        addressData[key] = true;
+                    } else {
+                        addressData[key] = value;
+                    }
+                });
+
+                // If isDefault wasn't checked, set it to false
+                if (!addressData.hasOwnProperty('isDefault')) {
+                    addressData.isDefault = false;
+                }
+
+                // AJAX request to save address
+                const method = addressData.id ? 'PUT' : 'POST';
+                const url = addressData.id ? '/api/addresses/' + addressData.id : '/api/addresses';
+
+                fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(addressData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        alert('Địa chỉ đã được lưu thành công!');
+                        hideAddressForm();
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Có lỗi xảy ra khi lưu địa chỉ.');
+                    });
+            });
+        }
+    });
+
+    // Remove from wishlist
+    function removeFromWishlist(wishlistId) {
+        if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi danh sách yêu thích?')) {
+            // AJAX request to remove from wishlist
+            fetch('/api/wishlists/' + wishlistId, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Sản phẩm đã được xóa khỏi danh sách yêu thích!');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi xóa sản phẩm khỏi danh sách yêu thích.');
+                });
+        }
+    }
+
+    // Add to cart from wishlist
+    function addToCart(productId) {
+        // AJAX request to add to cart
+        fetch('/api/cart/items', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: productId,
+                quantity: 1
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Sản phẩm đã được thêm vào giỏ hàng!');
+                // Update cart count
+                updateCartCount();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
+            });
+    }
+</script>
+</body>
+</html>

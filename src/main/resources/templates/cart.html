@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Giỏ hàng - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section cart-page">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a th:href="@{/}">Trang chủ</a>
+                </div>
+                <div class="breadcrumb-item active">
+                    Giỏ hàng
+                </div>
+            </div>
+
+            <h1 class="page-title">Giỏ hàng của bạn</h1>
+
+            <div class="cart-content" th:if="${!cart.items.empty}">
+                <div class="cart-grid">
+                    <div class="cart-items">
+                        <table class="cart-table">
+                            <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Tổng</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${cart.items}">
+                                <td data-label="Sản phẩm">
+                                    <div class="cart-product">
+                                        <div class="cart-product-image">
+                                            <img th:if="${item.productId != null}" th:src="${item.productImageUrl}" alt="Product">
+                                            <img th:if="${item.petId != null}" th:src="${item.petImageUrl}" alt="Pet">
+                                        </div>
+                                        <div class="cart-product-info">
+                                            <h3>
+                                                <a th:if="${item.productId != null}" th:href="@{/products/{id}(id=${item.productId})}" th:text="${item.productName}">Tên sản phẩm</a>
+                                                <a th:if="${item.petId != null}" th:href="@{/pets/{id}(id=${item.petId})}" th:text="${item.petName}">Tên thú cưng</a>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td data-label="Giá">
+                                    <div class="cart-price">
+                                        <span th:if="${item.productId != null && item.productDiscountPrice != null}" th:text="${#numbers.formatDecimal(item.productDiscountPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá khuyến mãi</span>
+                                        <span th:if="${item.productId != null && item.productDiscountPrice == null}" th:text="${#numbers.formatDecimal(item.productPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá sản phẩm</span>
+                                        <span th:if="${item.petId != null}" th:text="${#numbers.formatDecimal(item.petPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá thú cưng</span>
+                                    </div>
+                                </td>
+                                <td data-label="Số lượng">
+                                    <div class="cart-quantity">
+                                        <div class="quantity-input">
+                                            <button type="button" class="quantity-btn minus" th:onclick="'decreaseQuantity(' + ${item.id} + ')'">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number" th:id="'quantity-' + ${item.id}" th:value="${item.quantity}" min="1" max="100" readonly>
+                                            <button type="button" class="quantity-btn plus" th:onclick="'increaseQuantity(' + ${item.id} + ')'">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td data-label="Tổng">
+                                    <div class="cart-total" th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
+                                        Tổng tiền
+                                    </div>
+                                </td>
+                                <td data-label="Xóa">
+                                    <div class="cart-remove" th:onclick="'removeItem(' + ${item.id} + ')'">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="cart-actions">
+                            <a th:href="@{/products}" class="btn btn-outline">
+                                <i class="fas fa-arrow-left"></i> Tiếp tục mua sắm
+                            </a>
+                            <button type="button" class="btn btn-danger" onclick="clearCart()">
+                                <i class="fas fa-trash"></i> Xóa giỏ hàng
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="cart-summary">
+                        <h2>Tổng giỏ hàng</h2>
+
+                        <div class="summary-item">
+                            <div class="summary-label">Tạm tính</div>
+                            <div class="summary-value" th:text="${#numbers.formatDecimal(cart.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-label">Phí vận chuyển</div>
+                            <div class="summary-value">Miễn phí</div>
+                        </div>
+
+                        <div class="summary-total">
+                            <div class="summary-label">Tổng cộng</div>
+                            <div class="summary-value" th:text="${#numbers.formatDecimal(cart.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                        </div>
+
+                        <a th:href="@{/checkout}" class="btn btn-primary btn-block">
+                            Tiến hành thanh toán
+                        </a>
+
+                        <div class="coupon-form">
+                            <h3>Mã giảm giá</h3>
+                            <form>
+                                <div class="form-group">
+                                    <input type="text" placeholder="Nhập mã giảm giá" class="form-control">
+                                </div>
+                                <button type="submit" class="btn btn-outline btn-block">Áp dụng</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="empty-cart" th:if="${cart.items.empty}">
+                <div class="empty-cart-content">
+                    <div class="empty-cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h2>Giỏ hàng của bạn đang trống</h2>
+                    <p>Hãy tiếp tục mua sắm và thêm sản phẩm vào giỏ hàng.</p>
+                    <a th:href="@{/products}" class="btn btn-primary">
+                        Tiếp tục mua sắm
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    function decreaseQuantity(itemId) {
+        const quantityInput = document.getElementById('quantity-' + itemId);
+        if (parseInt(quantityInput.value) > 1) {
+            quantityInput.value = parseInt(quantityInput.value) - 1;
+            updateCartItem(itemId, parseInt(quantityInput.value));
+        }
+    }
+
+    function increaseQuantity(itemId) {
+        const quantityInput = document.getElementById('quantity-' + itemId);
+        quantityInput.value = parseInt(quantityInput.value) + 1;
+        updateCartItem(itemId, parseInt(quantityInput.value));
+    }
+
+    function updateCartItem(itemId, quantity) {
+        fetch('/api/cart/items/' + itemId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                quantity: quantity
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Reload the page to update cart
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi cập nhật giỏ hàng.');
+            });
+    }
+
+    function removeItem(itemId) {
+        if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+            fetch('/api/cart/items/' + itemId, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Reload the page to update cart
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng.');
+                });
+        }
+    }
+
+    function clearCart() {
+        if (confirm('Bạn có chắc chắn muốn xóa tất cả sản phẩm khỏi giỏ hàng?')) {
+            fetch('/api/cart/clear', {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Reload the page to update cart
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi xóa giỏ hàng.');
+                });
+        }
+    }
+</script>
+</body>
+</html>

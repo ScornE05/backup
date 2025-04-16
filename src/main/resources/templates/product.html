@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Sản phẩm - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a th:href="@{/}">Trang chủ</a>
+                </div>
+                <div class="breadcrumb-item" th:if="${currentCategory != null}">
+                    <a th:href="@{/products}">Sản phẩm</a>
+                </div>
+                <div class="breadcrumb-item active" th:if="${currentCategory != null}" th:text="${currentCategory.name}">
+                    Danh mục sản phẩm
+                </div>
+                <div class="breadcrumb-item active" th:if="${currentCategory == null}">
+                    Sản phẩm
+                </div>
+            </div>
+
+            <div class="products-container">
+                <div class="products-sidebar">
+                    <div class="sidebar-section">
+                        <h3>Danh mục</h3>
+                        <ul class="category-list">
+                            <li th:each="category : ${categories}">
+                                <a th:href="@{/products?categoryId={id}(id=${category.id})}"
+                                   th:class="${currentCategory != null && currentCategory.id == category.id ? 'active' : ''}"
+                                   th:text="${category.name}">
+                                    Tên danh mục
+                                </a>
+                                <ul th:if="${!category.children.empty}">
+                                    <li th:each="subCategory : ${category.children}">
+                                        <a th:href="@{/products?categoryId={id}(id=${subCategory.id})}"
+                                           th:class="${currentCategory != null && currentCategory.id == subCategory.id ? 'active' : ''}"
+                                           th:text="${subCategory.name}">
+                                            Tên danh mục con
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Lọc giá</h3>
+                        <form th:action="@{/products}" method="get" class="price-filter">
+                            <input type="hidden" name="categoryId" th:if="${currentCategory != null}" th:value="${currentCategory.id}">
+                            <div class="price-inputs">
+                                <div class="price-input">
+                                    <label>Từ</label>
+                                    <input type="number" name="minPrice" min="0" th:value="${param.minPrice}" placeholder="0">
+                                </div>
+                                <div class="price-input">
+                                    <label>Đến</label>
+                                    <input type="number" name="maxPrice" min="0" th:value="${param.maxPrice}" placeholder="1000000">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Áp dụng</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="products-main">
+                    <div class="products-header">
+                        <h2 th:if="${currentCategory != null}" th:text="${currentCategory.name}">Danh mục sản phẩm</h2>
+                        <h2 th:if="${currentCategory == null && searchTerm == null}">Tất cả sản phẩm</h2>
+                        <h2 th:if="${searchTerm != null}" th:text="'Kết quả tìm kiếm cho: ' + ${searchTerm}">Kết quả tìm kiếm</h2>
+
+                        <div class="products-actions">
+                            <div class="products-search">
+                                <form th:action="@{/products}" method="get">
+                                    <input type="text" name="search" placeholder="Tìm kiếm sản phẩm..." th:value="${searchTerm}">
+                                    <button type="submit"><i class="fas fa-search"></i></button>
+                                </form>
+                            </div>
+
+                            <div class="products-sort">
+                                <select id="sort-select" onchange="this.form.submit()">
+                                    <option value="name_asc">Tên A-Z</option>
+                                    <option value="name_desc">Tên Z-A</option>
+                                    <option value="price_asc">Giá tăng dần</option>
+                                    <option value="price_desc">Giá giảm dần</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="products-list" th:if="${!products.empty}">
+                        <div class="product-grid">
+                            <div class="product-card" th:each="product : ${products}">
+                                <div class="product-image">
+                                    <img th:src="${product.imageUrl}" alt="Product">
+                                    <span class="product-badge" th:if="${product.discountPrice != null}">Giảm giá</span>
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-category" th:text="${product.category.name}">Danh mục</div>
+                                    <h3 class="product-title">
+                                        <a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.name}">Tên sản phẩm</a>
+                                    </h3>
+                                    <div class="product-price">
+                                        <span class="current-price" th:if="${product.discountPrice != null}" th:text="${#numbers.formatDecimal(product.discountPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá khuyến mãi</span>
+                                        <span class="current-price" th:if="${product.discountPrice == null}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá bán</span>
+                                        <span class="original-price" th:if="${product.discountPrice != null}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá gốc</span>
+                                    </div>
+                                    <div class="product-actions">
+                                        <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline btn-sm">Chi tiết</a>
+                                        <a href="#" class="btn btn-primary btn-sm">Thêm vào giỏ</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="no-products" th:if="${products.empty}">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Không tìm thấy sản phẩm nào.
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" th:if="${products.totalPages > 1}">
+                        <div class="pagination-item" th:if="${!products.first}">
+                            <a class="pagination-link" th:href="@{/products(page=${products.number - 1}, size=${products.size}, categoryId=${param.categoryId}, search=${param.search}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice})}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </div>
+
+                        <div class="pagination-item" th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}">
+                            <a class="pagination-link" th:classappend="${i == products.number ? 'active' : ''}"
+                               th:href="@{/products(page=${i}, size=${products.size}, categoryId=${param.categoryId}, search=${param.search}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice})}"
+                               th:text="${i + 1}">
+                                1
+                            </a>
+                        </div>
+
+                        <div class="pagination-item" th:if="${!products.last}">
+                            <a class="pagination-link" th:href="@{/products(page=${products.number + 1}, size=${products.size}, categoryId=${param.categoryId}, search=${param.search}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice})}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

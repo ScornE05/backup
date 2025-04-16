@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Thú cưng - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a th:href="@{/}">Trang chủ</a>
+                </div>
+                <div class="breadcrumb-item active">
+                    Thú cưng
+                </div>
+            </div>
+
+            <h1 class="page-title">Thú cưng đang tìm nhà</h1>
+
+            <div class="pets-container">
+                <div class="pets-sidebar">
+                    <div class="sidebar-section">
+                        <h3>Loài</h3>
+                        <ul class="species-list">
+                            <li th:each="species : ${species}">
+                                <a th:href="@{/pets(species=${species})}"
+                                   th:class="${currentSpecies != null && currentSpecies == species ? 'active' : ''}"
+                                   th:text="${species}">
+                                    Loài
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-section" th:if="${currentSpecies != null && !breeds.empty}">
+                        <h3>Giống</h3>
+                        <ul class="breed-list">
+                            <li th:each="breed : ${breeds}">
+                                <a th:href="@{/pets(species=${currentSpecies}, breed=${breed})}"
+                                   th:class="${currentBreed != null && currentBreed == breed ? 'active' : ''}"
+                                   th:text="${breed}">
+                                    Giống
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Giới tính</h3>
+                        <ul class="gender-list">
+                            <li>
+                                <a th:href="@{/pets(species=${param.species}, breed=${param.breed}, gender='MALE')}"
+                                   th:class="${param.gender != null && param.gender[0] == 'MALE' ? 'active' : ''}">
+                                    Đực
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="@{/pets(species=${param.species}, breed=${param.breed}, gender='FEMALE')}"
+                                   th:class="${param.gender != null && param.gender[0] == 'FEMALE' ? 'active' : ''}">
+                                    Cái
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pets-main">
+                    <div class="pets-header">
+                        <h2 th:if="${currentSpecies != null && currentBreed != null}"
+                            th:text="${currentSpecies} + ' - ' + ${currentBreed}">
+                            Loài - Giống
+                        </h2>
+                        <h2 th:if="${currentSpecies != null && currentBreed == null}"
+                            th:text="${currentSpecies}">
+                            Loài
+                        </h2>
+                        <h2 th:if="${currentSpecies == null}">Tất cả thú cưng</h2>
+
+                        <div class="pets-actions">
+                            <div class="pets-sort">
+                                <select id="sort-select" onchange="this.form.submit()">
+                                    <option value="age_asc">Tuổi tăng dần</option>
+                                    <option value="age_desc">Tuổi giảm dần</option>
+                                    <option value="price_asc">Giá tăng dần</option>
+                                    <option value="price_desc">Giá giảm dần</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pets-list" th:if="${!pets.empty}">
+                        <div class="pet-grid">
+                            <div class="pet-card" th:each="pet : ${pets}">
+                                <div class="pet-image">
+                                    <img th:src="${pet.imageUrl}" alt="Pet">
+                                    <span class="pet-badge" th:text="${pet.status}">Available</span>
+                                </div>
+                                <div class="pet-info">
+                                    <h3 class="pet-name">
+                                        <a th:href="@{/pets/{id}(id=${pet.id})}" th:text="${pet.name}">Tên thú cưng</a>
+                                    </h3>
+                                    <div class="pet-breed" th:text="${pet.species} + ' - ' + ${pet.breed}">Loài - Giống</div>
+                                    <div class="pet-details">
+                                        <span class="pet-detail"><i class="fas fa-venus-mars"></i> <span th:text="${pet.gender}">Giới tính</span></span>
+                                        <span class="pet-detail"><i class="fas fa-birthday-cake"></i> <span th:text="${pet.age} + ' tháng'">Tuổi</span></span>
+                                        <span class="pet-detail" th:if="${pet.color != null}"><i class="fas fa-palette"></i> <span th:text="${pet.color}">Màu sắc</span></span>
+                                    </div>
+                                    <div class="pet-price" th:text="${#numbers.formatDecimal(pet.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá</div>
+                                    <div class="product-actions">
+                                        <a th:href="@{/pets/{id}(id=${pet.id})}" class="btn btn-outline btn-sm">Chi tiết</a>
+                                        <a th:href="@{/contact}" class="btn btn-primary btn-sm">Liên hệ</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="no-pets" th:if="${pets.empty}">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Không tìm thấy thú cưng nào.
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" th:if="${pets.totalPages > 1}">
+                        <div class="pagination-item" th:if="${!pets.first}">
+                            <a class="pagination-link" th:href="@{/pets(page=${pets.number - 1}, size=${pets.size}, species=${param.species}, breed=${param.breed}, gender=${param.gender})}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </div>
+
+                        <div class="pagination-item" th:each="i : ${#numbers.sequence(0, pets.totalPages - 1)}">
+                            <a class="pagination-link" th:classappend="${i == pets.number ? 'active' : ''}"
+                               th:href="@{/pets(page=${i}, size=${pets.size}, species=${param.species}, breed=${param.breed}, gender=${param.gender})}"
+                               th:text="${i + 1}">
+                                1
+                            </a>
+                        </div>
+
+                        <div class="pagination-item" th:if="${!pets.last}">
+                            <a class="pagination-link" th:href="@{/pets(page=${pets.number + 1}, size=${pets.size}, species=${param.species}, breed=${param.breed}, gender=${param.gender})}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

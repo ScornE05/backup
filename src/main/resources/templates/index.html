@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Pet Shop - Cửa hàng thú cưng uy tín nhất</title>
+</head>
+<body>
+<main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Chào mừng đến với Pet Shop</h1>
+                <p>Nơi cung cấp các sản phẩm và dịch vụ chăm sóc thú cưng chất lượng cao dành cho những người bạn đáng yêu của bạn.</p>
+                <div class="hero-buttons">
+                    <a th:href="@{/products}" class="btn btn-primary btn-lg">Mua sắm ngay</a>
+                    <a th:href="@{/about}" class="btn btn-outline btn-lg">Tìm hiểu thêm</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Categories Section -->
+    <section class="section categories">
+        <div class="container">
+            <div class="section-title">
+                <h2>Danh mục sản phẩm</h2>
+                <p>Khám phá các sản phẩm đa dạng dành cho thú cưng của bạn</p>
+            </div>
+            <div class="category-grid">
+                <div class="category-card" th:each="category : ${categories}">
+                    <img th:src="@{/static/images/categories/{id}.jpg(id=${category.id})}" alt="Category" class="category-image">
+                    <div class="category-overlay">
+                        <a th:href="@{/products?categoryId={id}(id=${category.id})}" class="category-name" th:text="${category.name}">Tên danh mục</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="section featured-products">
+        <div class="container">
+            <div class="section-title">
+                <h2>Sản phẩm nổi bật</h2>
+                <p>Những sản phẩm được nhiều khách hàng yêu thích và tin dùng</p>
+            </div>
+            <div class="product-grid">
+                <div class="product-card" th:each="product : ${featuredProducts}">
+                    <div class="product-image">
+                        <img th:src="${product.imageUrl}" alt="Product">
+                        <span class="product-badge" th:if="${product.discountPrice != null}">Giảm giá</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category" th:text="${product.category.name}">Danh mục</div>
+                        <h3 class="product-title">
+                            <a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.name}">Tên sản phẩm</a>
+                        </h3>
+                        <div class="product-price">
+                            <span class="current-price" th:if="${product.discountPrice != null}" th:text="${#numbers.formatDecimal(product.discountPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá khuyến mãi</span>
+                            <span class="current-price" th:if="${product.discountPrice == null}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá bán</span>
+                            <span class="original-price" th:if="${product.discountPrice != null}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá gốc</span>
+                        </div>
+                        <div class="product-actions">
+                            <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline btn-sm">Chi tiết</a>
+                            <a href="#" class="btn btn-primary btn-sm">Thêm vào giỏ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a th:href="@{/products}" class="btn btn-outline">Xem tất cả sản phẩm</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Pets Section -->
+    <section class="section pets">
+        <div class="container">
+            <div class="section-title">
+                <h2>Thú cưng đang tìm nhà</h2>
+                <p>Những người bạn đáng yêu đang chờ một mái ấm</p>
+            </div>
+            <div class="pet-grid">
+                <div class="pet-card" th:each="pet : ${pets}">
+                    <div class="pet-image">
+                        <img th:src="${pet.imageUrl}" alt="Pet">
+                        <span class="pet-badge" th:text="${pet.status}">Available</span>
+                    </div>
+                    <div class="pet-info">
+                        <h3 class="pet-name">
+                            <a th:href="@{/pets/{id}(id=${pet.id})}" th:text="${pet.name}">Tên thú cưng</a>
+                        </h3>
+                        <div class="pet-breed" th:text="${pet.species} + ' - ' + ${pet.breed}">Loài - Giống</div>
+                        <div class="pet-details">
+                            <span class="pet-detail"><i class="fas fa-venus-mars"></i> <span th:text="${pet.gender}">Giới tính</span></span>
+                            <span class="pet-detail"><i class="fas fa-birthday-cake"></i> <span th:text="${pet.age} + ' tháng'">Tuổi</span></span>
+                            <span class="pet-detail" th:if="${pet.color != null}"><i class="fas fa-palette"></i> <span th:text="${pet.color}">Màu sắc</span></span>
+                        </div>
+                        <div class="pet-price" th:text="${#numbers.formatDecimal(pet.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá</div>
+                        <div class="product-actions">
+                            <a th:href="@{/pets/{id}(id=${pet.id})}" class="btn btn-outline btn-sm">Chi tiết</a>
+                            <a th:href="@{/contact}" class="btn btn-primary btn-sm">Liên hệ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a th:href="@{/pets}" class="btn btn-outline">Xem tất cả thú cưng</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="section why-choose-us">
+        <div class="container">
+            <div class="section-title">
+                <h2>Tại sao chọn Pet Shop?</h2>
+                <p>Chúng tôi luôn nỗ lực mang đến những điều tốt nhất cho thú cưng của bạn</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h3>Chất lượng cao</h3>
+                    <p>Chúng tôi cung cấp các sản phẩm và dịch vụ chất lượng cao từ những thương hiệu uy tín.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>Giao hàng nhanh chóng</h3>
+                    <p>Giao hàng nhanh chóng và đảm bảo trong vòng 24h đối với khu vực nội thành.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>Tư vấn chuyên nghiệp</h3>
+                    <p>Đội ngũ nhân viên giàu kinh nghiệm, sẵn sàng tư vấn mọi vấn đề về thú cưng.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Dịch vụ tận tâm</h3>
+                    <p>Chúng tôi yêu thương thú cưng như chính những người bạn của mình.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="section newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Đăng ký nhận tin</h2>
+                <p>Đăng ký để nhận thông tin về sản phẩm mới, khuyến mãi và mẹo chăm sóc thú cưng.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Nhập địa chỉ email của bạn" required>
+                    <button type="submit" class="btn btn-primary">Đăng ký</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

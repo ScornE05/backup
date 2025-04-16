@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Đăng ký - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section">
+        <div class="container">
+            <div class="form-container">
+                <div class="form-title">
+                    <h2>Đăng ký tài khoản</h2>
+                    <p>Tạo tài khoản để mua sắm dễ dàng hơn</p>
+                </div>
+
+                <div class="alert alert-danger" th:if="${error != null}" th:text="${error}">
+                    Có lỗi xảy ra!
+                </div>
+
+                <form th:action="@{/register}" method="post" th:object="${user}">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Tên đăng nhập</label>
+                        <input type="text" id="username" name="username" class="form-control" th:field="*{username}" required>
+                        <div class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" th:field="*{email}" required>
+                        <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input type="password" id="password" name="password" class="form-control" th:field="*{password}" required>
+                        <div class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">Họ và tên</label>
+                        <input type="text" id="fullName" name="fullName" class="form-control" th:field="*{fullName}" required>
+                        <div class="error-message" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Số điện thoại</label>
+                        <input type="text" id="phone" name="phone" class="form-control" th:field="*{phone}">
+                        <div class="error-message" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address" class="form-label">Địa chỉ</label>
+                        <textarea id="address" name="address" class="form-control" th:field="*{address}" rows="3"></textarea>
+                        <div class="error-message" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
+                        <label for="terms" class="form-check-label">Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a></label>
+                    </div>
+
+                    <div class="form-action">
+                        <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
+                    </div>
+                </form>
+
+                <div class="form-link">
+                    Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

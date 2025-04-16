@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Giới thiệu - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section about-page">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a th:href="@{/}">Trang chủ</a>
+                </div>
+                <div class="breadcrumb-item active">
+                    Giới thiệu
+                </div>
+            </div>
+
+            <div class="about-content">
+                <div class="about-section">
+                    <h2>Về Pet Shop</h2>
+                    <p>Pet Shop được thành lập vào năm 2018 với sứ mệnh mang đến những sản phẩm và dịch vụ chăm sóc thú cưng chất lượng cao nhất. Chúng tôi tin rằng mỗi thú cưng đều xứng đáng nhận được sự yêu thương và chăm sóc tốt nhất từ chủ nhân của mình.</p>
+                    <p>Với đội ngũ nhân viên giàu kinh nghiệm và yêu động vật, Pet Shop cam kết mang đến cho khách hàng những sản phẩm chất lượng, dịch vụ tận tâm và những người bạn đồng hành bốn chân đáng yêu.</p>
+                    <p>Hiện tại, Pet Shop đã có mặt tại nhiều tỉnh thành trên cả nước với hệ thống cửa hàng hiện đại, thân thiện và đầy đủ tiện nghi.</p>
+                </div>
+
+                <div class="about-section">
+                    <h2>Tầm nhìn & Sứ mệnh</h2>
+                    <p><strong>Tầm nhìn:</strong> Trở thành chuỗi cửa hàng thú cưng hàng đầu Việt Nam, nơi mỗi khách hàng đều được trải nghiệm dịch vụ xuất sắc và mỗi thú cưng đều được đối xử với sự tôn trọng và yêu thương.</p>
+                    <p><strong>Sứ mệnh:</strong> Mang đến cho mọi gia đình những người bạn đồng hành bốn chân khỏe mạnh, hạnh phúc và những sản phẩm, dịch vụ chăm sóc thú cưng tốt nhất.</p>
+                </div>
+
+                <div class="about-section">
+                    <h2>Giá trị cốt lõi</h2>
+                    <div class="values-grid">
+                        <div class="value-item">
+                            <div class="value-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="value-content">
+                                <h3>Yêu thương</h3>
+                                <p>Chúng tôi yêu thương mọi thú cưng như chính thành viên trong gia đình của mình. Tình yêu thương này là nền tảng cho mọi hoạt động kinh doanh của chúng tôi.</p>
+                            </div>
+                        </div>
+                        <div class="value-item">
+                            <div class="value-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="value-content">
+                                <h3>Trách nhiệm</h3>
+                                <p>Chúng tôi luôn đặt trách nhiệm lên hàng đầu, đảm bảo mọi thú cưng được chăm sóc đúng cách và tìm được mái ấm phù hợp.</p>
+                            </div>
+                        </div>
+                        <div class="value-item">
+                            <div class="value-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="value-content">
+                                <h3>Chất lượng</h3>
+                                <p>Chúng tôi cam kết cung cấp những sản phẩm và dịch vụ có chất lượng cao nhất, đảm bảo sự hài lòng của khách hàng và sức khỏe của thú cưng.</p>
+                            </div>
+                        </div>
+                        <div class="value-item">
+                            <div class="value-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div class="value-content">
+                                <h3>Tin cậy</h3>
+                                <p>Chúng tôi xây dựng mối quan hệ dựa trên sự tin cậy và minh bạch, đảm bảo mọi thông tin về thú cưng và sản phẩm đều chính xác và đáng tin cậy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-section">
+                    <h2>Đội ngũ của chúng tôi</h2>
+                    <p>Đội ngũ Pet Shop bao gồm những người yêu động vật, có chuyên môn và kinh nghiệm trong lĩnh vực chăm sóc thú cưng. Chúng tôi không ngừng học hỏi và nâng cao trình độ để đảm bảo mang đến dịch vụ tốt nhất cho khách hàng và thú cưng.</p>
+
+                    <div class="team-members">
+                        <div class="team-member">
+                            <div class="team-member-image">
+                                <img src="/static/images/team/member-1.jpg" alt="Team Member">
+                            </div>
+                            <div class="team-member-name">Nguyễn Văn A</div>
+                            <div class="team-member-position">Giám đốc điều hành</div>
+                            <div class="team-member-social">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                        <div class="team-member">
+                            <div class="team-member-image">
+                                <img src="/static/images/team/member-2.jpg" alt="Team Member">
+                            </div>
+                            <div class="team-member-name">Trần Thị B</div>
+                            <div class="team-member-position">Quản lý cửa hàng</div>
+                            <div class="team-member-social">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                        <div class="team-member">
+                            <div class="team-member-image">
+                                <img src="/static/images/team/member-3.jpg" alt="Team Member">
+                            </div>
+                            <div class="team-member-name">Lê Văn C</div>
+                            <div class="team-member-position">Bác sĩ thú y</div>
+                            <div class="team-member-social">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-section">
+                    <h2>Cam kết của chúng tôi</h2>
+                    <ul class="commitment-list">
+                        <li>Cung cấp thú cưng khỏe mạnh, đã được tiêm phòng và kiểm tra sức khỏe đầy đủ.</li>
+                        <li>Cung cấp sản phẩm chất lượng cao từ các thương hiệu uy tín trong và ngoài nước.</li>
+                        <li>Tư vấn tận tâm và chuyên nghiệp, giúp khách hàng lựa chọn thú cưng và sản phẩm phù hợp nhất.</li>
+                        <li>Hỗ trợ khách hàng trong suốt quá trình chăm sóc thú cưng.</li>
+                        <li>Chế độ bảo hành, đổi trả sản phẩm rõ ràng và minh bạch.</li>
+                        <li>Môi trường cửa hàng sạch sẽ, thân thiện và an toàn cho mọi thú cưng.</li>
+                    </ul>
+                </div>
+
+                <div class="about-section">
+                    <h2>Đối tác của chúng tôi</h2>
+                    <div class="partners-grid">
+                        <div class="partner-item">
+                            <img src="/static/images/partners/partner-1.jpg" alt="Partner">
+                        </div>
+                        <div class="partner-item">
+                            <img src="/static/images/partners/partner-2.jpg" alt="Partner">
+                        </div>
+                        <div class="partner-item">
+                            <img src="/static/images/partners/partner-3.jpg" alt="Partner">
+                        </div>
+                        <div class="partner-item">
+                            <img src="/static/images/partners/partner-4.jpg" alt="Partner">
+                        </div>
+                        <div class="partner-item">
+                            <img src="/static/images/partners/partner-5.jpg" alt="Partner">
+                        </div>
+                        <div class="partner-item">
+                            <img src="/static/images/partners/partner-6.jpg" alt="Partner">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

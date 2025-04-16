@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">Pet Shop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/static/css/style.css}">
+    <link rel="stylesheet" th:href="@{/static/css/responsive.css}">
+</head>
+<body>
+<!-- Header -->
+<header class="main-header">
+    <div class="container">
+        <div class="header-wrapper">
+            <div class="logo">
+                <a th:href="@{/}">
+                    <h1><i class="fas fa-paw"></i> Pet Shop</h1>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a th:href="@{/}" th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}">Trang chủ</a></li>
+                    <li><a th:href="@{/products}" th:classappend="${#httpServletRequest.requestURI.startsWith('/products') ? 'active' : ''}">Sản phẩm</a></li>
+                    <li><a th:href="@{/pets}" th:classappend="${#httpServletRequest.requestURI.startsWith('/pets') ? 'active' : ''}">Thú cưng</a></li>
+                    <li><a th:href="@{/about}" th:classappend="${#httpServletRequest.requestURI == '/about' ? 'active' : ''}">Giới thiệu</a></li>
+                    <li><a th:href="@{/contact}" th:classappend="${#httpServletRequest.requestURI == '/contact' ? 'active' : ''}">Liên hệ</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a th:href="@{/cart}" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" th:text="${cartCount ?: 0}">0</span>
+                </a>
+                <div class="user-actions" th:if="${#request.userPrincipal != null}">
+                    <div class="dropdown">
+                        <button class="dropdown-toggle">
+                            <i class="fas fa-user"></i>
+                            <span th:text="${#request.userPrincipal.name}">Username</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a th:href="@{/profile}"><i class="fas fa-user-circle"></i> Tài khoản</a>
+                            <a th:href="@{/orders}"><i class="fas fa-clipboard-list"></i> Đơn hàng</a>
+                            <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-buttons" th:unless="${#request.userPrincipal != null}">
+                    <a th:href="@{/login}" class="btn btn-outline">Đăng nhập</a>
+                    <a th:href="@{/register}" class="btn btn-primary">Đăng ký</a>
+                </div>
+                <button class="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu">
+    <div class="mobile-menu-header">
+        <h3>Menu</h3>
+        <button class="mobile-menu-close"><i class="fas fa-times"></i></button>
+    </div>
+    <ul>
+        <li><a th:href="@{/}">Trang chủ</a></li>
+        <li><a th:href="@{/products}">Sản phẩm</a></li>
+        <li><a th:href="@{/pets}">Thú cưng</a></li>
+        <li><a th:href="@{/about}">Giới thiệu</a></li>
+        <li><a th:href="@{/contact}">Liên hệ</a></li>
+        <li><a th:href="@{/cart}">Giỏ hàng</a></li>
+        <li th:if="${#request.userPrincipal != null}"><a th:href="@{/profile}">Tài khoản</a></li>
+        <li th:if="${#request.userPrincipal != null}"><a th:href="@{/orders}">Đơn hàng</a></li>
+        <li th:if="${#request.userPrincipal != null}"><a th:href="@{/logout}">Đăng xuất</a></li>
+        <li th:unless="${#request.userPrincipal != null}"><a th:href="@{/login}">Đăng nhập</a></li>
+        <li th:unless="${#request.userPrincipal != null}"><a th:href="@{/register}">Đăng ký</a></li>
+    </ul>
+</div>
+
+<!-- Main content -->
+<main th:replace="${content}">
+    <!-- Content goes here -->
+</main>
+
+<!-- Footer -->
+<footer class="main-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>Pet Shop</h3>
+                <p>Cung cấp các sản phẩm và dịch vụ chăm sóc thú cưng chất lượng cao.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Liên kết nhanh</h3>
+                <ul>
+                    <li><a th:href="@{/}">Trang chủ</a></li>
+                    <li><a th:href="@{/products}">Sản phẩm</a></li>
+                    <li><a th:href="@{/pets}">Thú cưng</a></li>
+                    <li><a th:href="@{/about}">Giới thiệu</a></li>
+                    <li><a th:href="@{/contact}">Liên hệ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Danh mục</h3>
+                <ul>
+                    <li><a th:href="@{/products?categoryId=1}">Thức ăn</a></li>
+                    <li><a th:href="@{/products?categoryId=2}">Phụ kiện</a></li>
+                    <li><a th:href="@{/products?categoryId=3}">Đồ chơi</a></li>
+                    <li><a th:href="@{/products?categoryId=4}">Thuốc & sức khỏe</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Liên hệ</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Đường Láng, Đống Đa, Hà Nội</li>
+                    <li><i class="fas fa-phone"></i> +84 123 456 789</li>
+                    <li><i class="fas fa-envelope"></i> info@petshop.com</li>
+                    <li><i class="fas fa-clock"></i> 08:00 - 20:00, T2 - CN</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Pet Shop. Bản quyền thuộc về Pet Shop.</p>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/static/js/main.js}"></script>
+</body>
+</html>

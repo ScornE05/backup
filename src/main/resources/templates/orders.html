@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Đơn hàng của tôi - Pet Shop</title>
+</head>
+<body>
+<main>
+    <section class="section orders-page">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a th:href="@{/}">Trang chủ</a>
+                </div>
+                <div class="breadcrumb-item">
+                    <a th:href="@{/profile}">Tài khoản</a>
+                </div>
+                <div class="breadcrumb-item active">
+                    Đơn hàng
+                </div>
+            </div>
+
+            <h1 class="page-title">Đơn hàng của tôi</h1>
+
+            <div class="order-filter">
+                <div class="filter-tabs">
+                    <a th:href="@{/orders}" class="filter-tab" th:classappend="${status == null ? 'active' : ''}">Tất cả</a>
+                    <a th:href="@{/orders(status='PENDING')}" class="filter-tab" th:classappend="${status == 'PENDING' ? 'active' : ''}">Chờ xác nhận</a>
+                    <a th:href="@{/orders(status='PROCESSING')}" class="filter-tab" th:classappend="${status == 'PROCESSING' ? 'active' : ''}">Đang xử lý</a>
+                    <a th:href="@{/orders(status='SHIPPED')}" class="filter-tab" th:classappend="${status == 'SHIPPED' ? 'active' : ''}">Đang giao</a>
+                    <a th:href="@{/orders(status='DELIVERED')}" class="filter-tab" th:classappend="${status == 'DELIVERED' ? 'active' : ''}">Đã giao</a>
+                    <a th:href="@{/orders(status='CANCELLED')}" class="filter-tab" th:classappend="${status == 'CANCELLED' ? 'active' : ''}">Đã hủy</a>
+                </div>
+            </div>
+
+            <div class="order-list" th:if="${!orders.empty}">
+                <div class="order-card" th:each="order : ${orders}">
+                    <div class="order-header">
+                        <div class="order-id">
+                            Mã đơn hàng: <span th:text="${'#' + order.id}"></span>
+                        </div>
+                        <div class="order-date">
+                            Ngày đặt: <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+                        </div>
+                        <div class="order-status">
+                                <span th:class="${order.status}"
+                                      th:text="${order.status == 'PENDING' ? 'Chờ xác nhận' :
+                                              (order.status == 'PROCESSING' ? 'Đang xử lý' :
+                                              (order.status == 'SHIPPED' ? 'Đang giao hàng' :
+                                              (order.status == 'DELIVERED' ? 'Đã giao hàng' : 'Đã hủy')))}">
+                                    Trạng thái
+                                </span>
+                        </div>
+                    </div>
+
+                    <div class="order-items">
+                        <div class="order-item" th:each="item : ${order.items}">
+                            <div class="order-item-image">
+                                <img th:if="${item.productId != null}" th:src="${item.productImageUrl}" alt="Product">
+                                <img th:if="${item.petId != null}" th:src="${item.petImageUrl}" alt="Pet">
+                            </div>
+                            <div class="order-item-info">
+                                <h3>
+                                    <a th:if="${item.productId != null}" th:href="@{/products/{id}(id=${item.productId})}" th:text="${item.productName}">Tên sản phẩm</a>
+                                    <a th:if="${item.petId != null}" th:href="@{/pets/{id}(id=${item.petId})}" th:text="${item.petName}">Tên thú cưng</a>
+                                </h3>
+                                <div class="order-item-price">
+                                    <span class="order-item-quantity" th:text="${item.quantity} + ' x '"></span>
+                                    <span th:text="${#numbers.formatDecimal(item.unitPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Đơn giá</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-info">
+                        <div class="order-info-item">
+                            <span class="info-label">Địa chỉ giao hàng:</span>
+                            <span class="info-value" th:text="${order.shippingAddress}">Địa chỉ</span>
+                        </div>
+                        <div class="order-info-item">
+                            <span class="info-label">Số điện thoại:</span>
+                            <span class="info-value" th:text="${order.phone}">Số điện thoại</span>
+                        </div>
+                        <div class="order-info-item">
+                            <span class="info-label">Phương thức thanh toán:</span>
+                            <span class="info-value" th:text="${order.paymentMethod == 'CASH' ? 'Thanh toán khi nhận hàng' :
+                                                                 (order.paymentMethod == 'BANK_TRANSFER' ? 'Chuyển khoản ngân hàng' :
+                                                                 (order.paymentMethod == 'CREDIT_CARD' ? 'Thẻ tín dụng/Ghi nợ' :
+                                                                 (order.paymentMethod == 'PAYPAL' ? 'PayPal' : order.paymentMethod)))}">
+                                    Phương thức thanh toán
+                                </span>
+                        </div>
+                        <div class="order-info-item">
+                            <span class="info-label">Trạng thái thanh toán:</span>
+                            <span class="info-value" th:class="${order.paymentStatus == 'PAID' ? 'paid' : 'pending'}"
+                                  th:text="${order.paymentStatus == 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}">
+                                    Trạng thái thanh toán
+                                </span>
+                        </div>
+                    </div>
+
+                    <div class="order-total">
+                        <div class="total-label">Tổng cộng:</div>
+                        <div class="total-value" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                    </div>
+
+                    <div class="order-actions" th:if="${order.status == 'PENDING'}">
+                        <button type="button" class="btn btn-danger" th:onclick="'cancelOrder(' + ${order.id} + ')'">
+                            Hủy đơn hàng
+                        </button>
+                    </div>
+
+                    <div class="order-actions" th:if="${order.status == 'DELIVERED'}">
+                        <a th:href="@{/orders/{id}/review(id=${order.id})}" class="btn btn-primary">
+                            Đánh giá
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-orders" th:if="${orders.empty}">
+                <div class="empty-orders-content">
+                    <div class="empty-orders-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <h2>Bạn chưa có đơn hàng nào</h2>
+                    <p>Hãy tiếp tục mua sắm để tạo đơn hàng mới.</p>
+                    <a th:href="@{/products}" class="btn btn-primary">
+                        Tiếp tục mua sắm
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" th:if="${orders.totalPages > 1}">
+                <div class="pagination-item" th:if="${!orders.first}">
+                    <a class="pagination-link" th:href="@{/orders(page=${orders.number - 1}, size=${orders.size}, status=${param.status})}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </div>
+
+                <div class="pagination-item" th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}">
+                    <a class="pagination-link" th:classappend="${i == orders.number ? 'active' : ''}"
+                       th:href="@{/orders(page=${i}, size=${orders.size}, status=${param.status})}"
+                       th:text="${i + 1}">
+                        1
+                    </a>
+                </div>
+
+                <div class="pagination-item" th:if="${!orders.last}">
+                    <a class="pagination-link" th:href="@{/orders(page=${orders.number + 1}, size=${orders.size}, status=${param.status})}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    function cancelOrder(orderId) {
+        if (confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) {
+            fetch('/api/orders/' + orderId + '/status', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    status: 'CANCELLED'
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Đơn hàng đã được hủy thành công!');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi hủy đơn hàng.');
+                });
+        }
+    }
+</script>
+</body>
+</html>
