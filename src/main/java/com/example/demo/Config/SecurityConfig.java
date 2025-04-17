@@ -43,23 +43,37 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeHttpRequests()
-                .requestMatchers("/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/products/**", "/api/pets/**", "/api/categories/**").permitAll()
-                .requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
-                .anyRequest().authenticated();
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configure(http))
+
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/",
+                                "/favicon.ico",
+                                "/**/*.png",
+                                "/**/*.gif",
+                                "/**/*.svg",
+                                "/**/*.jpg",
+                                "/**/*.html",
+                                "/**/*.css",
+                                "/**/*.js",
+                                "/login",
+                                "/register",
+                                "/static/**",
+                                "/products",
+                                "/products/**",
+                                "/pets",
+                                "/pets/**",
+                                "/about",
+                                "/contact").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/products/**", "/api/pets/**", "/api/categories/**").permitAll()
+                        .requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
+                        .anyRequest().authenticated()
+                );
 
         // Add JWT filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

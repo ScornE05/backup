@@ -26,13 +26,13 @@ public class ThymeleafConfig implements WebMvcConfigurer {
         registry.addViewController("/register").setViewName("register");
     }
 
-    @Bean
-    public SpringResourceTemplateResolver templateResolver() {
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setPrefix("classpath:/templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCacheable(false);
-        return templateResolver;
-    }
+//    @Bean
+//    public SpringResourceTemplateResolver templateResolver() {
+//        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+//        templateResolver.setPrefix("classpath:/templates/");
+//        templateResolver.setSuffix(".html");
+//        templateResolver.setTemplateMode(TemplateMode.HTML);
+//        templateResolver.setCacheable(false);
+//        return templateResolver;
+//    }
 }

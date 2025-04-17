@@ -10,6 +10,7 @@ import com.example.demo.service.CartService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,9 +25,10 @@ public class CartController {
     }
 
     @GetMapping
-    public ResponseEntity<CartDTO> getCart(@CurrentUser UserPrincipal currentUser) {
+    public String getCart(Model model, @CurrentUser UserPrincipal currentUser) {
         CartDTO cart = cartService.getCartByUserId(currentUser.getId());
-        return ResponseEntity.ok(cart);
+        model.addAttribute("cart", cart);
+        return "cart";
     }
 
     @PostMapping("/items")
