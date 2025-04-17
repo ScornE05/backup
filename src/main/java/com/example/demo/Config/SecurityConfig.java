@@ -1,6 +1,5 @@
 package com.example.demo.Config;
 
-
 import com.example.demo.Security.JwtAuthenticationEntryPoint;
 import com.example.demo.Security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,8 +22,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+
     @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    public SecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler) {
+        this.unauthorizedHandler = unauthorizedHandler;
+    }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -43,9 +47,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configure(http))
-
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> {})
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session
